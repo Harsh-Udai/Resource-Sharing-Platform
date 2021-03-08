@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
     },
     email:{
         type: String,
-        //unique: true, // all emails must be uniqe
+        unique: true, // all emails must be uniqe
         required: true,
         trim: true,
         lowercase: true
@@ -20,6 +20,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true
+    },
+    init_token:{
+        type: String,
     },
     tokens:[{
         token:{
@@ -38,8 +41,11 @@ const userSchema = new mongoose.Schema({
 userSchema.methods.generateAuthToken = async function(){
     const user  = this
     //console.log(user)
+    
     const token = jwt.sign({_id: user._id.toString()},'resourceManagementApp')
     //console.log(token);
+    
+    user.init_token = token
     user.tokens = user.tokens.concat({token})
     await user.save()
     return token
@@ -52,8 +58,9 @@ userSchema.statics.findByCredentials = async (email,password)=>{
     if(!user){
         throw new Error('Unable to login /No User')
     }
-    const isMatch = await bcrypt.compare(password,user.password);
 
+    const isMatch = await bcrypt.compare(password,user.password);
+    
     if(!isMatch){
         throw new Error ('Unable to login /password issues')
     }
