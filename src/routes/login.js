@@ -4,9 +4,35 @@ const User = require('../models/user')
 const{sendWelcomeEmail,cancelEmail,securityM} = require('../emails/account')
 const { request } = require('express')
 const auth = require('../middleware/auth')
+const otpGen = require('otp-generator')
 
 // Router for creating user at Backend
+
+router.post('/Signup/email',async(req,res)=>{
+    try{
+        
+        const checkUp = await User.find({email: req.body.email});
+        
+        if(checkUp.length===0){
+            const otp = otpGen.generate(6,{upperCase:false,alphabets:false});
+            sendWelcomeEmail(req.body.email,'');
+            securityM(req.body.email,otp);
+            res.send({otp: otp});
+        }
+        else{
+            res.send("Already");
+        }
+
+        
+    }
+    catch(e){
+        res.status(400).send(e)
+    }
+
+})
+
 router.post('/users/create',async (req,res)=>{
+    console.log(req.body);
     const user = new User(req.body)   // Data recieve from the request
     try{
         await user.save()

@@ -5,7 +5,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 const sendWelcomeEmail = (email,name)=>{
     sgMail.send({
         to: email,
-        from: 'harshudai@jklu.edu.in',
+        from: 'harshudai2001@gmail.com',
         subject: 'Thanks for joining in',
         text: `Welcome to the app, ${name}. Let me know how you get along with the app.`
     })
@@ -14,7 +14,7 @@ const sendWelcomeEmail = (email,name)=>{
 const securityM = (email,text)=>{
     sgMail.send({
         to:email,
-        from: 'harshudai@jklu.edu.in',
+        from: 'harshudai2001@gmail.com',
         subject: 'This is yours Security token',
         text: `Security Token;- ${text}`
     })
@@ -23,7 +23,7 @@ const securityM = (email,text)=>{
 const cancelEmail = (email,name)=>{
     sgMail.send({
         to: email,
-        from: 'harshudai@jklu.edu.in',
+        from: 'harshudai2001@gmail.com',
         subject: 'Sorry so to see you go!',
         text: `Goodbye, ${name}. I hope to see you back sometime soon.` 
     })
