@@ -1,13 +1,14 @@
 const express = require('express')
-const router = new express.Router()
-const User = require('../models/user')
-const{sendWelcomeEmail,cancelEmail,securityM} = require('../emails/account')
-const { request } = require('express')
-const auth = require('../middleware/auth')
+
 const otpGen = require('otp-generator')
 const bcrypt = require('bcryptjs')
 
-// Router for creating user at Backend
+const{sendWelcomeEmail,cancelEmail,securityM} = require('../emails/account')
+const User = require('../models/user')
+const auth = require('../middleware/auth')
+
+const router = new express.Router()
+
 
 router.post('/Signup/email',async(req,res)=>{
     try{
@@ -49,14 +50,9 @@ router.post('/Reset/Update',async(req, res)=>{
     try{
         
         const checkUp = await User.find({email: req.body.email});
-        
         checkUp[0].password =  (req.body.newPass)
-
-        
         await checkUp[0].save();
-        
         res.send('Done')
-
     }
     catch(e){
         res.send("error")
@@ -64,13 +60,10 @@ router.post('/Reset/Update',async(req, res)=>{
 })
 
 router.post('/users/create',async (req,res)=>{
-    
-    const user = new User(req.body)   // Data recieve from the request
+    const user = new User(req.body)   
     try{
         await user.save()
-        //sendWelcomeEmail(user.email,user.name)
         const token = await user.generateAuthToken()
-        //securityM(user.email,token);        
         res.status(200).send({"token": token});
     } catch(e){
         res.status(400).send(e)
@@ -79,7 +72,6 @@ router.post('/users/create',async (req,res)=>{
 
 router.post('/users/confirm',auth,async(req,res)=>{
     try{
-        console.log("succesfull entered");
         res.send('all set')
     }
     catch(e){
@@ -90,16 +82,13 @@ router.post('/users/confirm',auth,async(req,res)=>{
 router.post('/users/login',async(req,res)=>{
     const email = req.body.email;
     const password = req.body.password;
-    console.log(email,password)
     try{
         const user  = await User.findByCredentials(email,password)
-        console.log(user)
         res.status(200).send(user)
     }
     catch(e){
         res.send({user:'noUser'})
     }
-    
 })
 
 module.exports = router
