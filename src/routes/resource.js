@@ -5,7 +5,7 @@ const multer = require('multer')
 const Resource = require('../models/resource')
 const sharp = require('sharp')
 const User = require('../models/user')
-
+const { v4: uuidv4 } = require('uuid');
 
 const upload = multer({
     
@@ -20,10 +20,12 @@ const upload = multer({
 router.post('/uploadResource',upload.single('image'),async(req,res)=>{
     req.body.resource_Name = req.body.resource_Name.toLowerCase();
     req.body.classification = req.body.classification;
+    req.body.unique_id = uuidv4();
     const buffer = await sharp(req.file.buffer).resize({ width:250, height:250 }).png().toBuffer()
     const buffer1 = await sharp(req.file.buffer).toBuffer()
     req.body.image = buffer;
     req.body.imageF = buffer1;
+    req.body.sold = 'NOPE';
     const resource = new Resource(req.body);
     await resource.save()
     res.send()
@@ -84,20 +86,23 @@ router.post('/Profile',auth,async(req,res)=>{
 
 router.post('/Profile/userData',auth,async(req,res)=>{
     try{
-        const user = await User.find({init_token:req.body.token})
-        const data1 = await Resource.find({owner:user[0].name})
+        
+        const data1 = await Resource.find({email:req.body.email})
         res.send(data1)
     }
     catch(e){
-        res.status(400).send(e);
+        res.send({msg:'no'});
     }
 })
 
 router.post('/Profile/userData/delete',auth,async(req,res)=>{
     try{
-        const data1 = await Resource.deleteOne({token_Check:req.body.token,resource_Name:req.body.name})
-        const user = await User.find({init_token:req.body.token})
-        const data2 = await Resource.find({owner:user[0].name})
+        console.log(req.body);
+        const data1 = await Resource.deleteOne({unique_id:req.body.unique_id})
+
+        
+        const data2 = await Resource.find({email:req.body.email})
+        console.log(data2);
         res.send(data2)
     }
     catch(e){
@@ -135,11 +140,13 @@ router.post('/Resource/interest',auth,async(req,res)=>{
 
 router.post('/ResourceFind',auth,async(req,res)=>{
     try{
-        const resource = await Resource.find({resource_Name:req.body.name,email:req.body.email});
+        
+        const resource = await Resource.find({unique_id:req.body.unique_id});
+        
         res.send(resource[0]);
     }
     catch(e){
-        res.status(404).send(e)
+        res.send({msg:'No'})
     }
 })
 
@@ -153,7 +160,8 @@ router.post('/ResourceFindUpdate',auth,async(req,res)=>{
             image:resource[0].image,
             queue:resource[0].queue,
             borrow:resource[0].borrow,
-            price:resource[0].Price
+            price:resource[0].Price,
+            unique_id:resource[0].unique_id
         }
         res.send(data);
     }
@@ -164,7 +172,7 @@ router.post('/ResourceFindUpdate',auth,async(req,res)=>{
 
 router.post('/ResourceFindUpdateRefresh',upload.single('image'),async(req,res)=>{
     try{
-        const resource = await Resource.find({resource_Name:req.body.OriginalName,email:req.body.email});
+        const resource = await Resource.find({unique_id:req.body.unique_id,email:req.body.email});
         resource[0].resource_Name= req.body.resource_Name
         resource[0].resource_Description = req.body.resource_Description
         resource[0].classification = req.body.classification

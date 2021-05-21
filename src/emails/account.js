@@ -16,7 +16,7 @@ const securityM = (email,text)=>{
         to:email,
         from: 'harshudai2001@gmail.com',
         subject: 'This is yours Security token',
-        text: `Security Token;- ${text}`
+        text: `Security Token:- ${text}`
     })
 }
 
@@ -29,8 +29,18 @@ const cancelEmail = (email,name)=>{
     })
 }
 
+const approveEmail = (email,name,rsName)=>{
+    sgMail.send({
+        to:email,
+        from :'harshudai2001@gmail.com',
+        subject: 'Approved Resource',
+        text:`<h1>Congratulations ${name}. Your Request for the Resource Name: ${rsName} is approved. Try to communicate with resource owner :) </h1>`
+    })
+}
+
 module.exports={
     sendWelcomeEmail,
     cancelEmail,
-    securityM
+    securityM,
+    approveEmail
 }

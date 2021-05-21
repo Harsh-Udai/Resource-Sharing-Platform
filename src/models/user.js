@@ -29,6 +29,68 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }],
+    cart:[{
+        resource_name:{
+            type: String,
+            
+        },
+        resource_owner:{
+            type: String,
+            
+        },
+        unique_key:{
+            type: String,
+            
+        },
+        deal:{
+            type: Boolean
+        }
+    }],
+    pending:[{
+        resource_name:{
+            type: String,
+            
+        },
+        resource_owner:{
+            type: String,
+            
+        },
+        unique_key:{
+            type: String,
+            
+        },
+        deal:{
+            type: Boolean
+        },
+        finalApprove:{
+            type:String
+        }
+    }],
+    approveTo:[{
+        request_name:{
+            type: String,
+           
+        },
+        request_email:{
+            type: String,
+            
+        },
+        resource_name:{
+            type: String,
+            
+        },
+        resource_owner:{
+            type: String,
+            
+        },
+        unique_key:{
+            type: String,
+            
+        },
+        deal:{
+            type: Boolean
+        }
+    }],
     avatar:{
         type: Buffer
     }

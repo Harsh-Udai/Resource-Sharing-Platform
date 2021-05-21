@@ -42,6 +42,9 @@ const userSchema = new mongoose.Schema({
         type:String,
         default:''
     },
+    sold:{
+        type:String,
+    },
     queue:[{
         name:{
             type:String,
@@ -54,7 +57,10 @@ const userSchema = new mongoose.Schema({
             type: String,
             default:''
         }
-    }]
+    }],
+    unique_id:{
+        type:String,
+    }
 },{
     timestamps:true
 })

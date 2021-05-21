@@ -5,12 +5,14 @@ require('./db/mongoose')
 
 const loginRoute = require('./routes/login')
 const resourceRoute = require('./routes/resource')
+const cartRoute = require('./routes/cart')
 
 const app =express()
 app.use(cors())
 app.use(express.json())
 app.use(loginRoute);
 app.use(resourceRoute);
+app.use(cartRoute)
 
 const server = http.createServer(app)
 const io = require("socket.io")(server, {
