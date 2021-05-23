@@ -6,6 +6,8 @@ require('./db/mongoose')
 const loginRoute = require('./routes/login')
 const resourceRoute = require('./routes/resource')
 const cartRoute = require('./routes/cart')
+const conversationRoute = require("./routes/conversation");
+const messageRoute = require("./routes/message");
 
 const app =express()
 app.use(cors())
@@ -13,6 +15,8 @@ app.use(express.json())
 app.use(loginRoute);
 app.use(resourceRoute);
 app.use(cartRoute)
+app.use("/api/conversations",conversationRoute);
+app.use("/api/messages",messageRoute);
 
 const server = http.createServer(app)
 const io = require("socket.io")(server, {
@@ -26,6 +30,21 @@ const io = require("socket.io")(server, {
 
 const Notify = require('./models/Notify');
 
+let users = [];
+
+const addUser=(userId,socketId)=>{
+    !users.some((user)=>user.userId===userId) &&
+    users.push({userId,socketId});
+}
+
+const removeUser = (socketId)=>{
+    users = users.filter(user => user.socketId!==socketId);
+}
+
+const getUser = (userId)=>{
+    return users.find((user)=>user.userId===userId)
+}
+
 io.on('connect', async(socket) => {
     console.log('a user connected');
     const data1 = await DataRetrive();
@@ -35,6 +54,37 @@ io.on('connect', async(socket) => {
         const data2 = await DataRetrive();
         io.emit("DataE",data2);
     })
+
+
+    
+    socket.on('addUser',userId=>{
+        addUser(userId,socket.id);
+        io.emit('getUsers', users);
+    })
+
+    //send and get message
+
+    socket.on("sendMessage",({senderId,receiverId,text})=>{
+        const user = getUser(receiverId);
+        if(user){
+            io.to(user.socketId).emit('getMessage',{
+                senderId,
+                text,
+            })
+        }
+        
+    })
+
+
+    // when disconnect
+
+    socket.on('disconnect',()=>{
+        console.log('a user got disconnected');
+        removeUser(socket.id);
+        io.emit('getUsers', users);
+    })
+
+
 });
 
 
