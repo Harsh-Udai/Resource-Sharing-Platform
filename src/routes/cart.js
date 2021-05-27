@@ -175,6 +175,7 @@ router.post('/request/AppCancel',auth,async(req,res)=>{
 router.post('/request/AppApprove',auth,async(req,res)=>{
     try{
         const user2 = await User.find({email:req.body.email2});
+        
         const newD=[]
         user2[0].pending.map((data)=>{
             if(data.unique_key===req.body.unique_id){

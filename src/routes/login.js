@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs')
 
 const{sendWelcomeEmail,cancelEmail,securityM} = require('../emails/account')
 const User = require('../models/user')
+const Resource = require('../models/resource');
 const auth = require('../middleware/auth')
 
 const router = new express.Router()
@@ -88,6 +89,39 @@ router.post('/users/login',async(req,res)=>{
     }
     catch(e){
         res.send({user:'noUser'})
+    }
+})
+
+router.post('/auth/admin',async(req,res)=>{
+    const token = req.body.token;
+    try{
+        if(token===process.env.ACCESS_CODE){
+            
+            const data = await User.find({});
+            res.send({msg:data});
+        }
+        else{
+            res.send({msg:'wrong'})
+        }
+    }
+    catch(e){
+
+    }
+})
+
+router.post('/auth/accountR',async(req,res)=>{
+    try{
+        // console.log("-------------------------------------------------------------------------------------")
+        // console.log(req.body);
+        // console.log('-------------new users---------------------------')
+        let users = await User.deleteOne({email:req.body.email});
+        // console.log('-------------new resources---------------------------')
+        let resources = await Resource.deleteMany({email:req.body.email,token_Check:req.body.token});
+        
+        res.send({msg:'updated'})
+    }
+    catch(e){
+        res.status(400).send(e);
     }
 })
 

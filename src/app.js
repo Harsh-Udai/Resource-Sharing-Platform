@@ -57,32 +57,34 @@ io.on('connect', async(socket) => {
 
 
     
-    socket.on('addUser',userId=>{
-        addUser(userId,socket.id);
-        io.emit('getUsers', users);
-    })
+    // socket.on('addUser',userId=>{
+    //     addUser(userId,socket.id);
+    //     console.log(users);
+    //     io.emit('getUsers', users);
+    // })
 
-    //send and get message
+    // //send and get message
 
-    socket.on("sendMessage",({senderId,receiverId,text})=>{
-        const user = getUser(receiverId);
-        if(user){
-            io.to(user.socketId).emit('getMessage',{
-                senderId,
-                text,
-            })
-        }
+    // socket.on("sendMessage",({senderId,receiverId,text})=>{
+    //     const user = getUser(receiverId);
+    //     if(user){
+    //         io.to(user.socketId).emit('getMessage',{
+    //             senderId,
+    //             text,
+    //         })
+    //     }
         
-    })
+    // })
 
 
-    // when disconnect
+    // // when disconnect
 
-    socket.on('disconnect',()=>{
-        console.log('a user got disconnected');
-        removeUser(socket.id);
-        io.emit('getUsers', users);
-    })
+    // socket.on('disconnect',()=>{
+    //     console.log('a user got disconnected');
+    //     removeUser(socket.id);
+    //     console.log(users);
+    //     io.emit('getUsers', users);
+    // })
 
 
 });
