@@ -3,7 +3,7 @@ const express = require('express')
 const otpGen = require('otp-generator')
 const bcrypt = require('bcryptjs')
 
-const{sendWelcomeEmail,cancelEmail,securityM} = require('../emails/account')
+const{sendWelcomeEmail,cancelEmail,securityM, accountDelete} = require('../emails/account')
 const User = require('../models/user')
 const Resource = require('../models/resource');
 const auth = require('../middleware/auth')
@@ -92,6 +92,17 @@ router.post('/users/login',async(req,res)=>{
     }
 })
 
+router.post('/userAll',async(req,res)=>{
+    try{
+        
+        const user = await User.find({});
+        res.send(user);
+    }
+    catch(e){
+        res.status(400).send(e)
+    }
+})
+
 router.post('/auth/admin',async(req,res)=>{
     const token = req.body.token;
     try{
@@ -117,7 +128,7 @@ router.post('/auth/accountR',async(req,res)=>{
         let users = await User.deleteOne({email:req.body.email});
         // console.log('-------------new resources---------------------------')
         let resources = await Resource.deleteMany({email:req.body.email,token_Check:req.body.token});
-        
+        accountDelete(req.body.email);
         res.send({msg:'updated'})
     }
     catch(e){

@@ -38,9 +38,19 @@ const approveEmail = (email,name,rsName)=>{
     })
 }
 
+const accountDelete = (email)=>{
+    sgMail.send({
+        to:email,
+        from: 'harshudai2001@gmail.com',
+        subject : 'Account Deleted',
+        text: `Hello ${email}, your account has been suspended becuase we have found some unusal content from your account.`
+    })
+}
+
 module.exports={
     sendWelcomeEmail,
     cancelEmail,
     securityM,
-    approveEmail
+    approveEmail,
+    accountDelete
 }
