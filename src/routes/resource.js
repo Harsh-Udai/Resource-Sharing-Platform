@@ -97,12 +97,24 @@ router.post('/Profile/userData',auth,async(req,res)=>{
 
 router.post('/Profile/userData/delete',auth,async(req,res)=>{
     try{
-        console.log(req.body);
+        
         const data1 = await Resource.deleteOne({unique_id:req.body.unique_id})
 
+        let user = await User.find({});
+
+        let user1 = user.map((dat)=>{
+            // console.log(dat)
+            // console.log(dat.cart)
+            const newCart = dat.cart.filter((et)=>et.unique_key!==req.body.unique_id)
+            dat.cart = newCart;
+           
+            dat.save();
+        })
+        
+        
         
         const data2 = await Resource.find({email:req.body.email})
-        console.log(data2);
+        
         res.send(data2)
     }
     catch(e){

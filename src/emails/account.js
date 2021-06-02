@@ -34,7 +34,7 @@ const approveEmail = (email,name,rsName)=>{
         to:email,
         from :'harshudai2001@gmail.com',
         subject: 'Approved Resource',
-        text:`<h1>Congratulations ${name}. Your Request for the Resource Name: ${rsName} is approved. Try to communicate with resource owner :) </h1>`
+        text:`Congratulations ${name}. Your Request for the Resource Name: ${rsName} is approved. Try to communicate with resource owner :) `
     })
 }
 
