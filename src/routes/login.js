@@ -25,7 +25,7 @@ router.post('/Signup/email',async(req,res)=>{
         }
     }
     catch(e){
-        res.status(400).send(e)
+        res.status(400).send("error")
     }
 })
 
