@@ -25,10 +25,7 @@ router.post('/Signup/email',async(req,res)=>{
         }
     }
     catch(e){
-        const otp = otpGen.generate(6,{upperCase:false,alphabets:false});
-        sendWelcomeEmail(req.body.email,'');
-        securityM(req.body.email,otp);
-        res.send({otp: otp});
+        res.status(400).send(e);
     }
 })
 
