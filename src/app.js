@@ -19,6 +19,7 @@ app.use("/api/conversations",conversationRoute);
 app.use("/api/messages",messageRoute);
 
 const server = http.createServer(app)
+
 const io = require("socket.io")(server, {
     cors: {
         origin: "http://localhost:3000",
@@ -43,38 +44,6 @@ io.on('connect', async(socket) => {
         const data2 = await DataRetrive();
         io.emit("DataE",data2);
     })
-
-
-    
-    // socket.on('addUser',userId=>{
-    //     addUser(userId,socket.id);
-    //     console.log(users);
-    //     io.emit('getUsers', users);
-    // })
-
-    // //send and get message
-
-    // socket.on("sendMessage",({senderId,receiverId,text})=>{
-    //     const user = getUser(receiverId);
-    //     if(user){
-    //         io.to(user.socketId).emit('getMessage',{
-    //             senderId,
-    //             text,
-    //         })
-    //     }
-        
-    // })
-
-
-    // // when disconnect
-
-    // socket.on('disconnect',()=>{
-    //     console.log('a user got disconnected');
-    //     removeUser(socket.id);
-    //     console.log(users);
-    //     io.emit('getUsers', users);
-    // })
-
 
 });
 
@@ -109,6 +78,20 @@ app.get('/MSG',async(req,res)=>{
     }
     
 })
+
+app.get('/united',async(req,res)=>{
+    try{
+        
+        res.send('hello world');
+    }
+    catch(e){
+        console.log("Bhai Error hai dekh fir se!")
+    }
+    
+})
+
+
+
 
 
 module.exports = server

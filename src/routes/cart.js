@@ -129,17 +129,12 @@ router.post('/request/data',auth,async(req,res)=>{
 
 router.post('/request/AppCancel',auth,async(req,res)=>{
     try{
-        
         const user= await User.find({email:req.body.email});
         const newd= user[0].approveTo.filter((data)=>{
             return data.unique_key!=req.body.unique_id
         })
-        
         user[0].approveTo = newd;
-        
-
         const user1 = await User.find({email:req.body.email2});
-        
         const dd=[]
         user1[0].pending.map((data)=>{
             if(data.unique_key===req.body.unique_id){
@@ -148,24 +143,14 @@ router.post('/request/AppCancel',auth,async(req,res)=>{
             }
             dd.push(data);
         })
-
-        
         const data1 = (user1[0].cart).filter((data)=>{
             return data.unique_key!=req.body.unique_id
         })
-
         user1[0].cart = data1;
-        
-
         user1[0].pending = dd;
         await user1[0].save();
         await user[0].save();
-
-        
-
-
         res.send({msg:'done'});
-
     }   
     catch(e){
         res.status(400).send(e);
@@ -175,7 +160,6 @@ router.post('/request/AppCancel',auth,async(req,res)=>{
 router.post('/request/AppApprove',auth,async(req,res)=>{
     try{
         const user2 = await User.find({email:req.body.email2});
-        
         const newD=[]
         user2[0].pending.map((data)=>{
             if(data.unique_key===req.body.unique_id){
@@ -186,13 +170,10 @@ router.post('/request/AppApprove',auth,async(req,res)=>{
             newD.push(data);
         })
         user2[0].pending=newD;
-
         const data1 = (user2[0].cart).filter((data)=>{
             return data.unique_key!=req.body.unique_id
         })
-
         user2[0].cart = data1;
-
         const user = await User.find({email: req.body.email});
         const newd=[]
         user[0].approveTo.map((data)=>{
@@ -203,18 +184,13 @@ router.post('/request/AppApprove',auth,async(req,res)=>{
             newd.push(data);
         })
         user[0].approveTo=newd;
-
         await user[0].save();
         await user2[0].save();
-
         const rsq = await Resource.find({email: req.body.email,unique_id:req.body.unique_id});
         rsq[0].sold = 'SOLD';
         rsq[0].save();
-
         await approveEmail(req.body.email2,req.body.email2,req.body.resource_name)
-
         res.send({msg:'done'});
-
     }   
     catch(e){
         res.status(400).send(e);
