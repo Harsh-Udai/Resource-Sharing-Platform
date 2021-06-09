@@ -153,15 +153,12 @@ router.post('/Resource/interest',auth,async(req,res)=>{
 router.post('/ResourceFind',auth,async(req,res)=>{
     try{
         
-        const user = await User.find({email:req.body.email});
-        if(user.length!==0){
-            const resource = await Resource.find({unique_id:req.body.unique_id});
         
-            res.send(resource[0]);
-        }
-        else{
-            res.sed({msg:'NO'})
-        }
+        const resource = await Resource.find({unique_id:req.body.unique_id});
+    
+        res.send(resource[0]);
+        
+        
         
     }
     catch(e){
