@@ -150,17 +150,21 @@ router.post('/Profile/userData/delete',auth,async(req,res)=>{
 
 router.post('/Resource/interest',auth,async(req,res)=>{
     try{
-        const resource = await Resource.find({resource_Name:req.body.name});
+        // console.log(req.body);
+        const resource = await Resource.find({unique_id:req.body.unique_id});
+        console.log(resource)
         const changeRes = resource[0].queue.filter((dt)=>{
             return dt.email!==req.body.email && dt.name!==req.body.user
         })
         if(changeRes.length !== resource[0].queue.length){
+            console.log("alreay liked")
             resource[0].queue = changeRes;
             resource[0].likes-=1;
             await resource[0].save();  
             res.send("0");
         }
         else{
+            console.log("new one")
             resource[0].queue = resource[0].queue.concat([{
                 name:req.body.user,
                 email:req.body.user_email,
