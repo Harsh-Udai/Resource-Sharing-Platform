@@ -48,16 +48,42 @@ router.get('/retriveResource',async(req,res)=>{
 
 router.post('/FindResource',async(req,res)=>{
     try{
-        const data = await Resource.find({resource_Name:req.body.find})
-        const data1 = await Resource.find({owner:req.body.find})
-        const data2 = await Resource.find({classification:req.body.find})
-        const data3 = data1.concat(data2)
-        if(data.length!=0 || data1.length!=0 || data2.length!=0){
-            res.send(data.concat(data3));
+        
+        if(req.body.categ==='Owner'){
+            
+            const data1 = await Resource.find({owner:req.body.find})
+            if(data1.length===0){
+                return res.send('NO')
+            }
+            res.send(data1);
         }
-        else{
-            res.send("NO")
+        else if(req.body.categ==='Resource'){
+            
+            const data = await Resource.find({resource_Name:req.body.find})
+            if(data.length===0){
+                return res.send('NO')
+            }
+            res.send(data);
         }
+        else if(req.body.categ==='Category'){
+            
+            const data2 = await Resource.find({classification:req.body.find})
+            if(data2.length===0){
+                return res.send('NO')
+            }
+            res.send(data2);
+        }
+
+        // const data = await Resource.find({resource_Name:req.body.find})
+        // const data1 = await Resource.find({owner:req.body.find})
+        // const data2 = await Resource.find({classification:req.body.find})
+        // const data3 = data1.concat(data2)
+        // if(data.length!=0 || data1.length!=0 || data2.length!=0){
+        //     res.send(data.concat(data3));
+        // }
+        // else{
+        //     res.send("NO")
+        // }
     }
     catch(e){
         res.status(404).send({error:"issues"});
