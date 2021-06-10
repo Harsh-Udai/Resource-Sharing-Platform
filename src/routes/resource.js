@@ -18,7 +18,7 @@ const upload = multer({
 })
 
 router.post('/uploadResource',upload.single('image'),async(req,res)=>{
-    req.body.resource_Name = req.body.resource_Name.toLowerCase();
+    req.body.resource_Name = req.body.resource_Name;
     req.body.classification = req.body.classification;
     req.body.unique_id = uuidv4();
     const buffer = await sharp(req.file.buffer).resize({ width:250, height:250 }).png().toBuffer()
